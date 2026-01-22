@@ -17,7 +17,9 @@ import { User, Team, UserRole, Sprint, Issue, IssueStatus, IssueType, Priority, 
 type ViewType = 'dashboard' | 'backlog' | 'teams' | 'reports';
 
 const App: React.FC = () => {
-  const [activeUser, setActiveUser] = useState<User>(MOCK_USERS[1]);
+  // Global Users State - The "Source of Truth" for all people
+  const [users, setUsers] = useState<User[]>(MOCK_USERS);
+  const [activeUser, setActiveUser] = useState<User>(users[1]); // Jordan Smith
   const [activeTeamId, setActiveTeamId] = useState<string>(MOCK_TEAMS[0].id);
   const [teams, setTeams] = useState<Team[]>(MOCK_TEAMS);
   const [issues, setIssues] = useState<Issue[]>(MOCK_BACKLOG);
@@ -26,8 +28,6 @@ const App: React.FC = () => {
   const activeTeam = useMemo(() => 
     teams.find(t => t.id === activeTeamId) || teams[0], [teams, activeTeamId]
   );
-
-  const canManageSprint = activeUser.role === UserRole.ADMIN || activeUser.role === UserRole.SCRUM_MASTER;
 
   const currentSprint = useMemo(() => 
     activeTeam.sprints.find(s => s.status === 'ACTIVE'), [activeTeam]
@@ -77,36 +77,43 @@ const App: React.FC = () => {
     setTeams(prev => prev.map(t => t.id === teamId ? { ...t, ...updates } : t));
   };
 
+  // Global User Management Handlers
+  const handleUpdateGlobalUser = (userId: string, updates: Partial<User>) => {
+    setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updates } : u));
+    // Propagate changes to team members as well
+    setTeams(prevTeams => prevTeams.map(t => ({
+      ...t,
+      members: t.members.map(m => m.id === userId ? { ...m, ...updates } as TeamMember : m)
+    })));
+  };
+
+  const handleAddGlobalUser = (userData: Partial<User>) => {
+    const newUser: User = {
+      id: `u-${Date.now()}`,
+      name: userData.name || 'New User',
+      email: userData.email || '',
+      avatar: userData.avatar || `https://picsum.photos/seed/${Date.now()}/100`,
+      role: userData.role || UserRole.DEVELOPER,
+    };
+    setUsers(prev => [...prev, newUser]);
+  };
+
   const handleStartSprint = () => {
     if (!currentSprint) return;
     const updatedSprints = activeTeam.sprints.map(s => 
       s.id === currentSprint.id ? { ...s, status: 'ACTIVE' as const } : s
     );
     handleUpdateTeam(activeTeam.id, { sprints: updatedSprints });
-    alert(`${currentSprint.name} has officially started!`);
   };
 
   const handleCompleteSprint = () => {
     if (!currentSprint) return;
-    
-    // 1. Move unfinished items back to backlog
     const unfinishedIds = issues
       .filter(i => i.sprintId === currentSprint.id && i.status !== IssueStatus.DONE)
       .map(i => i.id);
-      
-    setIssues(prev => prev.map(i => 
-      unfinishedIds.includes(i.id) 
-        ? { ...i, sprintId: undefined, status: IssueStatus.BACKLOG } 
-        : i
-    ));
-
-    // 2. Mark sprint as CLOSED
-    const updatedSprints = activeTeam.sprints.map(s => 
-      s.id === currentSprint.id ? { ...s, status: 'CLOSED' as const } : s
-    );
+    setIssues(prev => prev.map(i => unfinishedIds.includes(i.id) ? { ...i, sprintId: undefined, status: IssueStatus.BACKLOG } : i));
+    const updatedSprints = activeTeam.sprints.map(s => s.id === currentSprint.id ? { ...s, status: 'CLOSED' as const } : s);
     handleUpdateTeam(activeTeam.id, { sprints: updatedSprints });
-    
-    alert(`Sprint completed! ${unfinishedIds.length} unfinished items rolled back to backlog.`);
     setActiveView('reports');
   };
 
@@ -127,7 +134,7 @@ const App: React.FC = () => {
     <Layout 
       activeUser={activeUser} 
       onUserChange={setActiveUser}
-      users={MOCK_USERS}
+      users={users}
       activeTeam={activeTeam}
       onTeamChange={(team) => {
         setActiveTeamId(team.id);
@@ -161,11 +168,13 @@ const App: React.FC = () => {
       {activeView === 'teams' && (
         <TeamManagement 
           teams={teams}
-          allUsers={MOCK_USERS}
+          allUsers={users}
           activeTeam={activeTeam}
           onUpdateTeam={handleUpdateTeam}
           onAddTeam={handleAddTeam}
           onDeleteTeam={(id) => setTeams(prev => prev.filter(t => t.id !== id))}
+          onUpdateGlobalUser={handleUpdateGlobalUser}
+          onAddGlobalUser={handleAddGlobalUser}
         />
       )}
       {activeView === 'reports' && (
