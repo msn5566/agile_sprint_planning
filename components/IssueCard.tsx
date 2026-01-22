@@ -1,8 +1,7 @@
 
 import React from 'react';
-// Fixed: Issue and Priority are exported from types.ts, but Icons is exported from constants.tsx
-import { Issue, Priority } from '../types';
-import { Icons } from '../constants';
+import { Issue, Priority } from '../types.ts';
+import { Icons } from '../constants.tsx';
 
 interface IssueCardProps {
   issue: Issue;

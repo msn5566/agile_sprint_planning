@@ -40,8 +40,14 @@
   }
 }
 </script>
+<script>
+    // Polyfill process for browser environments to avoid crashes on local runs
+    window.process = window.process || { env: { API_KEY: '' } };
+</script>
 </head>
 <body>
     <div id="root"></div>
+    <!-- Explicitly load the entry point -->
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>

@@ -1,18 +1,18 @@
 
 import React, { useState, useMemo } from 'react';
-import { Layout } from './components/Layout';
-import { Dashboard } from './components/Dashboard';
-import { PlanningBoard } from './components/PlanningBoard';
-import { BacklogManager } from './components/BacklogManager';
-import { TeamManagement } from './components/TeamManagement';
-import { SprintReports } from './components/SprintReports';
+import { Layout } from './components/Layout.tsx';
+import { Dashboard } from './components/Dashboard.tsx';
+import { PlanningBoard } from './components/PlanningBoard.tsx';
+import { BacklogManager } from './components/BacklogManager.tsx';
+import { TeamManagement } from './components/TeamManagement.tsx';
+import { SprintReports } from './components/SprintReports.tsx';
 import { 
   MOCK_USERS, 
   MOCK_TEAMS, 
   MOCK_BACKLOG, 
   MOCK_SPRINTS 
-} from './constants';
-import { User, Team, UserRole, Sprint, Issue, IssueStatus, IssueType, Priority, TeamMember } from './types';
+} from './constants.tsx';
+import { User, Team, UserRole, Sprint, Issue, IssueStatus, IssueType, Priority, TeamMember } from './types.ts';
 
 type ViewType = 'dashboard' | 'backlog' | 'teams' | 'reports';
 

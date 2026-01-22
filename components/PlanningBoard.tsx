@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Issue, Team, Sprint, IssueType, Priority, UserRole } from '../types';
-import { IssueCard } from './IssueCard';
+import { Issue, Team, Sprint, IssueType, Priority, UserRole } from '../types.ts';
+import { IssueCard } from './IssueCard.tsx';
 
 interface PlanningBoardProps {
   team: Team;

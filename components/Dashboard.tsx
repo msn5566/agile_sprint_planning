@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Team, Sprint, Issue, IssueStatus } from '../types';
-import { AISprintCoach } from './AISprintCoach';
+import { Team, Sprint, Issue, IssueStatus } from '../types.ts';
+import { AISprintCoach } from './AISprintCoach.tsx';
 
 interface DashboardProps {
   team: Team;
