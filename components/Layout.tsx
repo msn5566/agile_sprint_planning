@@ -10,8 +10,8 @@ interface LayoutProps {
   activeTeam: Team;
   onTeamChange: (team: Team) => void;
   teams: Team[];
-  activeView: 'dashboard' | 'backlog' | 'teams' | 'reports';
-  onNavigate: (view: 'dashboard' | 'backlog' | 'teams' | 'reports') => void;
+  activeView: 'dashboard' | 'backlog' | 'teams' | 'reports' | 'po_workspace';
+  onNavigate: (view: 'dashboard' | 'backlog' | 'teams' | 'reports' | 'po_workspace') => void;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ 
@@ -65,6 +65,14 @@ export const Layout: React.FC<LayoutProps> = ({
           >
             <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
             Backlog
+          </button>
+
+          <button 
+            onClick={() => onNavigate('po_workspace')}
+            className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all ${activeView === 'po_workspace' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+          >
+            <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+            PO Workspace
           </button>
 
           <button 
@@ -125,6 +133,7 @@ export const Layout: React.FC<LayoutProps> = ({
               {activeView === 'dashboard' ? 'Team Overview' : 
                activeView === 'backlog' ? 'Backlog Management' : 
                activeView === 'teams' ? 'Team & Capacity' :
+               activeView === 'po_workspace' ? 'PO Strategy Workspace' :
                'Sprint Analytics'}
             </h1>
             <span className="text-slate-300">/</span>

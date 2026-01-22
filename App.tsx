@@ -6,6 +6,7 @@ import { PlanningBoard } from './components/PlanningBoard.tsx';
 import { BacklogManager } from './components/BacklogManager.tsx';
 import { TeamManagement } from './components/TeamManagement.tsx';
 import { SprintReports } from './components/SprintReports.tsx';
+import { POWorkspace } from './components/POWorkspace.tsx';
 import { 
   MOCK_USERS, 
   MOCK_TEAMS, 
@@ -14,7 +15,7 @@ import {
 } from './constants.tsx';
 import { User, Team, UserRole, Sprint, Issue, IssueStatus, IssueType, Priority, TeamMember } from './types.ts';
 
-type ViewType = 'dashboard' | 'backlog' | 'teams' | 'reports';
+type ViewType = 'dashboard' | 'backlog' | 'teams' | 'reports' | 'po_workspace';
 
 const App: React.FC = () => {
   // Global Users State - The "Source of Truth" for all people
@@ -182,6 +183,9 @@ const App: React.FC = () => {
           team={activeTeam}
           issues={issues}
         />
+      )}
+      {activeView === 'po_workspace' && (
+        <POWorkspace />
       )}
     </Layout>
   );
